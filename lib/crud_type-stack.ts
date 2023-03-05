@@ -80,14 +80,14 @@ export class CrudTypeStack extends cdk.Stack {
     // Agrega los permisos necesarios para conectarse a la instancia de RDS
     database.grantConnect(lambdaGetCp);
 
-    const api = new apigateway.RestApi(this, 'myapi');
-
-    const resource = api.root.addResource('cp',{ 
+    const api = new apigateway.RestApi(this, 'myapi',{
       defaultCorsPreflightOptions: {
-          allowOrigins: ['*'],
-          allowMethods: ['POST', 'OPTIONS', 'GET', 'PUT', 'DELETE'],
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowMethods: apigateway.Cors.ALL_METHODS // this is also the default
       }
     });
+
+    const resource = api.root.addResource('cp',);
     resource.addMethod('POST', new apigateway.LambdaIntegration(lambdaGetCp));
 
     const bucket = new s3.Bucket(this, 'MyBucket', { 
